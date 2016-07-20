@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{title}}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/jquery.json.min.js') }}"></script>
+</head>
+<body style="background: #e8eef0;color: #444;min-width: 480px;">
+<nav class="navbar navbar-inverse">
+    <div class="container-fluid">
+        <div class="navbar-header">
+            <span class="navbar-brand" href="#">vSphere 资源管理</span>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li><a href="{{url_for('vsphere_vm_home')}}"><font size="3">虚拟机</font></a></li>
+                <li><a href="{{url_for('vsphere_host_list')}}"><font size="3">物理机</font></a></li>
+                <li><a href="{{url_for('vsphere_datastore_list')}}"><font size="3">存储</font></a></li>
+                <li><a href="{{url_for('vsphere_network_home')}}"><font size="3">网络</font></a></li>
+                <li class="dropdown">
+                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">项目管理
+                        <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="{{url_for('project_list')}}">项目</a></li>
+                        <li><a href="{{url_for('project_mail_list')}}">邮件</a></li>
+                        <li><a href="{{url_for('project_contacts_list')}}">联系人</a></li>
+                        <li><a href="{{url_for('project_department_list')}}">部门</a></li>
+                    </ul>
+                </li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#">用户: {{session.username}}</a></li>
+                <li><a href="{{ url_for('logout') }}">退出登录</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+{% block body %}
+
+{% endblock %}
+</body>
+</html>

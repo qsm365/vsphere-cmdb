@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 1080px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">邮件</font>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>项目</td>
+                        <td>邮件类别</td>
+                        <td>邮件标题</td>
+                        <td>状态</td>
+                        <td>创建时间</td>
+                        <td>发送时间</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in mail_list %}
+                    <tr>
+                        <td><a href="{{url_for('project_detail')}}?id={{m.projectid}}">{{m.project}}</a></td>
+                        <td>{{m.type}}</td>
+                        <td>{{m.title}}</td>
+                        <td><span class="badge">{{m.state}}</span></td>
+                        <td>{{m.createat}}</td>
+                        <td>{{m.sendat|notnone}}</td>
+                        <td><a href="#" class="btn btn-warning">删除</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

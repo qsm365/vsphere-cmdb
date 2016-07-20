@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">{{folder[2]}}</font>
+            </span>
+            <span class="badge">项目数量:{{folders|length}}</span>
+            <span class="badge">虚拟机数量:{{c_vm}}</span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>项目名称</td>
+                        <td class="pull-right">虚拟机数量</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr class="onerow" id="">
+                        <td><a href="{{url_for('vsphere_vm_list')}}?vmfid={{vmfid}}">未分组虚拟机</a></td>
+                        <td><span class="badge pull-right">{{c_vms}}</span></td>
+                    </tr>
+                    {% for f in folders %}
+                    <tr class="onerow" id="{{f[1]}}">
+                        <td ><a href="{{url_for('vsphere_vm_list')}}?vmfid={{f[0]}}">{{f[1]}}</a></td>
+                        <td ><span class="badge pull-right">{{f[2]}}</span></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+{% endblock %}

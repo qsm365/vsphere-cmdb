@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{title}}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker.css') }}">
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+</head>
+<body>
+<table class="table">
+    <tr>
+        <td>名称:</td>
+        <td><input id="input_name" type="text" class="form-control pull-right" value="{{content.name}}"/></td>
+    </tr>
+    <tr>
+        <td>部门:</td>
+        <td>
+            <select id="select_department" class="form-control pull-right">
+                <option value="0">请选择...</option>
+                {% for d in department_list%}
+                <option value="{{d.id}}" {%if content.departmentid==d.id%}selected="selected"{%endif%}>{{d.name}}</option>
+                {% endfor %}
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>负责人:</td>
+        <td>
+            <select id="select_contacts" class="form-control pull-right">
+                <option value="0">请选择...</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>项目类型:</td>
+        <td>
+            <select id="select_projecttype" class="form-control pull-right">
+                <option value="1" {%if content.type=='1'%}selected="selected"{%endif%}>{{1|projecttypeinfo}}</option>
+                <option value="2" {%if content.type=='2'%}selected="selected"{%endif%}>{{2|projecttypeinfo}}</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>资源数量:</td>
+        <td>
+            <input id="input_amount" type="text" class="form-control pull-right" placeholder="虚拟机数量或扩容磁盘大小(GB)" value="{{content.amount}}"/>
+        </td>
+    </tr>
+    <tr>
+        <td>结束时间:</td>
+        <td>
+            <input type="text" class="form-control" id="enddate" {%if content.endat%}value="{{content.endat}}"{%endif%}>
+        </td>
+    </tr>
+</table>
+<a class="btn btn-warning pull-right" id="btn_save">保存</a>
+<script>
+$(document).ready(function(){
+    $('#enddate').datepicker({
+				format: 'yyyy-mm-dd'
+			});
+    $("#btn_save").click(function(){
+        $.post(
+            "#",
+            {
+                name: $("#input_name").val(),
+                departmentid: $("#select_department").val(),
+                managerid: $("#select_contacts").val(),
+                projecttype: $("#select_projecttype").val(),
+                amount: $("#input_amount").val(),
+                enddate: $("#enddate").val()
+            },
+            function(data){
+                 window.parent.location = "{{url_for('project_detail')}}?id={{content.id}}";
+                }
+            );
+    });
+    $("#select_department").change(function(){
+        departmentid = $(this).children('option:selected').val();
+        $.post(
+            "{{url_for('project_find_contacts_json')}}",
+            {
+                departmentid: departmentid
+            },
+            function(data){
+                $("#select_contacts option").remove()
+                $("#select_contacts").append("<option value='0'>请选择...</option>")
+                data['contacts_list'].forEach(function(e){
+                    $("#select_contacts").append("<option value='"+e['contacts_id']+"'>"+e['contacts_name']+"</option>");
+                });
+            });
+    })
+    $.post(
+        "{{url_for('project_find_contacts_json')}}",
+        {
+            departmentid: {{content.departmentid}}
+        },
+        function(data){
+            data['contacts_list'].forEach(function(e){
+                if(e['contacts_id']=={{content.managerid}}){
+                    $("#select_contacts").append("<option value='"+e['contacts_id']+"' selected='selected'>"+e['contacts_name']+"</option>");
+                }else{
+                    $("#select_contacts").append("<option value='"+e['contacts_id']+"'>"+e['contacts_name']+"</option>");
+                }
+            });
+        }
+    );
+})
+</script>
+</body>
+</html>

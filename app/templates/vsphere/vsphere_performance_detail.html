@@ -1,0 +1,171 @@
+{% extends "layout.html" %}
+{% block body %}
+<script src="{{ url_for('static', filename='js/jquery.canvasjs.min.js') }}"></script>
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <table width="100%">
+                <tr>
+                    <td>
+                        <span>
+                            <font size="5">{{info.name}}</font>
+                        </span>
+                    </td>
+                    <td width="80px">
+                        <div class="dropdown ">
+                        <button class="btn btn-primary dropdown-toggle nopadding" type="button" data-toggle="dropdown">
+                            <span>{{histlevelstr}}</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                            <li><a href="{{url_for('vsphere_performance_detail')}}?type={{perftype}}&moid={{moid}}">准实时</a></li>
+                            <li><a href="{{url_for('vsphere_performance_detail')}}?type={{perftype}}&moid={{moid}}&histlevel=day">近一天</a></li>
+                            <li><a href="{{url_for('vsphere_performance_detail')}}?type={{perftype}}&moid={{moid}}&histlevel=week">近一周</a></li>
+                            <li><a href="{{url_for('vsphere_performance_detail')}}?type={{perftype}}&moid={{moid}}&histlevel=month">近一月</a></li>
+                        </ul>
+                        </div>
+                    </td>
+                    <td width="80px">
+                        {% if perftype == 'vm' %}
+                        <a class="btn btn-warning pull-right" href="{{url_for('vsphere_vm_detail')}}?vmid={{moid}}">查看VM配置</a>
+                        {% elif perftype == 'host' %}
+                        <a class="btn btn-warning pull-right" href="{{url_for('vsphere_host_detail')}}?hostid={{moid}}">查看物理机配置</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <th>项目</th>
+                    <th>平均</th>
+                    <th>最大</th>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>CPU使用率</td>
+                    <td>{{cpuval|average}} %</td>
+                    <td>{{cpuval|max}} %</td>
+                </tr>
+                <tr>
+                    <td>内存使用率</td>
+                    <td>{{memval|average}} %</td>
+                    <td>{{memval|max}} %</td>
+                </tr>
+                <tr>
+                    <td>磁盘速率</td>
+                    <td>{{disk1val|average|adjustnum_k}}Bps</td>
+                    <td>{{disk1val|max|adjustnum_k}}Bps</td>
+                </tr>
+                <tr>
+                    <td>磁盘延时</td>
+                    <td>{{disk2val|average}} ms</td>
+                    <td>{{disk2val|max}} ms</td>
+                </tr>
+                <tr>
+                    <td>网络速率</td>
+                    <td>{{netval|average|adjustnum_k}}Bps</td>
+                    <td>{{netval|max|adjustnum_k}}Bps</td>
+                </tr>
+                </tbody>
+            </table>
+            <div id="chartContainer1" style="height: 300px; width: 100%;"></div>
+            <div id="chartContainer4" style="height: 300px; width: 100%;"></div>
+            <div id="chartContainer2" style="height: 300px; width: 100%;"></div>
+            <div id="chartContainer3" style="height: 300px; width: 100%;"></div>
+            <div id="chartContainer5" style="height: 300px; width: 100%;"></div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+  window.onload = function () {
+    var chart1 = new CanvasJS.Chart("chartContainer1",
+    {
+      title:{
+      text: "CPU使用率 (%)"
+      },
+       data: [
+      {
+        type: "line",
+        dataPoints: [
+        {% for i in range(slen) %}
+        { x: new Date("{{sampletime[i]}}"), y: {{cpuval[i]}} },
+        {% endfor %}
+        ]
+      }
+      ]
+    });
+    var chart2 = new CanvasJS.Chart("chartContainer2",
+    {
+      title:{
+      text: "DiskIO速率 (KBps)"
+      },
+       data: [
+      {
+        type: "line",
+        dataPoints: [
+        {% for i in range(slen) %}
+        { x: new Date("{{sampletime[i]}}"), y: {{disk1val[i]}} },
+        {% endfor %}
+        ]
+      }
+      ]
+    });
+    var chart3 = new CanvasJS.Chart("chartContainer3",
+    {
+      title:{
+      text: "DiskIO延时 (ms)"
+      },
+       data: [
+      {
+        type: "line",
+        dataPoints: [
+        {% for i in range(slen) %}
+        { x: new Date("{{sampletime[i]}}"), y: {{disk2val[i]}} },
+        {% endfor %}
+        ]
+      }
+      ]
+    });
+    var chart4 = new CanvasJS.Chart("chartContainer4",
+    {
+      title:{
+      text: "内存使用率 (%)"
+      },
+       data: [
+      {
+        type: "line",
+        dataPoints: [
+        {% for i in range(slen) %}
+        { x: new Date("{{sampletime[i]}}"), y: {{memval[i]}} },
+        {% endfor %}
+        ]
+      }
+      ]
+    });
+    var chart5 = new CanvasJS.Chart("chartContainer5",
+    {
+      title:{
+      text: "网络速率 (KBps)"
+      },
+       data: [
+      {
+        type: "line",
+        dataPoints: [
+        {% for i in range(slen) %}
+        { x: new Date("{{sampletime[i]}}"), y: {{netval[i]}} },
+        {% endfor %}
+        ]
+      }
+      ]
+    });
+
+    chart1.render();
+    chart2.render();
+    chart3.render();
+    chart4.render();
+    chart5.render();
+  }
+</script>
+{% endblock %}

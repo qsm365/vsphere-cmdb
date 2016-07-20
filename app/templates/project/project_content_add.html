@@ -1,0 +1,100 @@
+{% extends "layout.html" %}
+{% block body %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/datepicker.css') }}">
+<script src="{{ url_for('static', filename='js/bootstrap-datepicker.js') }}"></script>
+<div class="well" style="margin-left: auto;margin-right: auto;width: 480px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">新建项目</font>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>名称:</td>
+                    <td><input id="input_name" type="text" class="form-control pull-right"/></td>
+                </tr>
+                <tr>
+                    <td>部门:</td>
+                    <td>
+                        <select id="select_department" class="form-control pull-right">
+                            <option value="0">请选择...</option>
+                            {% for d in department_list%}
+                            <option value="{{d[0]}}">{{d[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>负责人:</td>
+                    <td>
+                        <select id="select_contacts" class="form-control pull-right">
+                            <option value="0">请选择...</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>项目类型:</td>
+                    <td>
+                        <select id="select_projecttype" class="form-control pull-right">
+                            <option value="1">{{1|projecttypeinfo}}</option>
+                            <option value="2">{{2|projecttypeinfo}}</option>
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>资源数量:</td>
+                    <td>
+                        <input id="input_amount" type="text" class="form-control pull-right" placeholder="虚拟机数量或扩容磁盘大小(GB)"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>结束时间:</td>
+                    <td>
+                        <input type="text" class="form-control" id="enddate">
+                    </td>
+                </tr>
+            </table>
+            <a class="btn btn-warning pull-right" id="btn_save">保存</a>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $('#enddate').datepicker({
+				format: 'yyyy-mm-dd'
+			});
+    $("#btn_save").click(function(){
+        $.post(
+            "{{url_for('project_add')}}",
+            {
+                name: $("#input_name").val(),
+                departmentid: $("#select_department").val(),
+                managerid: $("#select_contacts").val(),
+                projecttype: $("#select_projecttype").val(),
+                amount: $("#input_amount").val(),
+                enddate: $("#enddate").val()
+            },
+            function(data){
+                 window.location = "{{url_for('project_list')}}";
+                }
+            );
+    });
+    $("#select_department").change(function(){
+        departmentid = $(this).children('option:selected').val();
+        $.post(
+            "{{url_for('project_find_contacts_json')}}",
+            {
+                departmentid: departmentid
+            },
+            function(data){
+                 data['contacts_list'].forEach(function(e){
+                    $("#select_contacts").append("<option value='"+e['contacts_id']+"'>"+e['contacts_name']+"</option>");
+                 });
+                }
+            );
+    })
+})
+</script>
+{% endblock %}

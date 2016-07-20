@@ -1,0 +1,48 @@
+{% extends "layout.html" %}
+{% block body %}
+<div style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading">
+            <table>
+                <tr>
+                    <td>
+                        <span>数据中心:</span>
+                    </td>
+                    <td>
+                        <span class="dropdown ">
+                        <button class="btn btn-primary dropdown-toggle nopadding" type="button" data-toggle="dropdown">
+                            <span>DC_SH</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu">
+                        {% for d in dcs %}
+                            <li><a href="{{url_for('vsphere_vm_home')}}?dcid={{d[1]}}">{{d[2]}}</a></li>
+                        {% endfor %}
+                        </ul>
+                        </span>
+                    </td>
+                    <td width="53%"></td>
+                    <td>
+                        <a class="btn btn-warning" href="{{url_for('vsphere_project_map')}}">项目概览</a>
+                    </td>
+                    <td>
+                        <a class="btn btn-warning" href="{{url_for('vsphere_vm_map')}}">虚拟机概览</a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                {% for d in dcinfo %}
+                <tr>
+                <td>
+                <a type="button" class="btn btn-info btn-lg" style="width:100%" href="{{url_for('vsphere_project_list')}}?vmfid={{d[2]}}"><span class="pull-left"><font size="6">{{d[1]}}</font></span><span class="pull-right">项目数：{{d[3]}}</span></a>
+                </td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+{% endblock %}

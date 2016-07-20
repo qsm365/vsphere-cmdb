@@ -1,0 +1,107 @@
+{% extends "layout.html" %}
+{% block body %}
+<style type="text/css">
+	.text_box{
+		width:560px;
+		max-height:600px;
+		_height:200px;/*兼容IE6浏览器*/
+		margin:0;
+		padding: 6px 12px;
+		outline:0;
+		border:1px solid #e4e4e4;
+		word-wrap:break-word;/*用于英文文本自动换行，所有主流浏览器支持*/
+		overflow-x:hidden;
+		overflow-y:auto;
+		-webkit-user-modify: read-write-plaintext-only;
+		border-radius: 4px;
+	}
+	.text_box_readonly{
+		width:560px;
+		max-height:600px;
+		_height:200px;/*兼容IE6浏览器*/
+		margin:0;
+		padding: 6px 12px;
+		outline:0;
+		border:1px solid #e4e4e4;
+		word-wrap:break-word;/*用于英文文本自动换行，所有主流浏览器支持*/
+		overflow-x:hidden;
+		overflow-y:auto;
+		-webkit-user-modify: read-only;
+		border-radius: 4px;
+	}
+</style>
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">发送邮件</font>
+            </span>
+            <a class="btn btn-warning pull-right" href="#" id="send">发送</a>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>发件人:</td>
+                    <td>
+                        <div id="from_show" class="text_box_readonly" contenteditable="true"></div>
+                        <input id="from" type="hidden" value=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>收件人:</td>
+                    <td>
+                        <div id="to_show" class="text_box_readonly" contenteditable="true"></div>
+                        <input id="to" type="hidden" value=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>抄送:</td>
+                    <td>
+                        <div id="cc_show" class="text_box_readonly" contenteditable="true"></div>
+                        <input id="cc" type="hidden" value=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>主题:</td>
+                    <td>
+                        <div id="subject_show" class="text_box_readonly" contenteditable="true"></div>
+                        <input id="subject" type="hidden" value=""/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>附件:</td>
+                    <td>
+                        <div id="attachment_show" class="text_box_readonly" contenteditable="true"></div>
+                        <input id="attachment" type="hidden" value=""/>
+                    </td>
+                </tr>
+            </table>
+            <div id="mail_content" style="border: 1px solid #e4e4e4;border-radius: 4px;padding:4px">
+
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+if (typeof document.webkitHidden == "undefined") {
+    // 非chrome浏览器阻止粘贴
+    box.onpaste = function() {
+    return false;
+    }
+}
+$(document).ready(function(){
+    $("#send").click(function(){
+        $.post(
+            "#",
+            {
+                operation: "commitprecheck",
+
+            },
+            function(data){
+                window.location = "{{url_for('project_mail_list')}}";
+            }
+        )
+    })
+});
+</script>
+{% endblock %}

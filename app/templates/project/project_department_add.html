@@ -1,0 +1,34 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 480px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">新建部门</font>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>部门名称:</td>
+                    <td><input id="input_name" type="text" class="form-control pull-right"/></td>
+                </tr>
+            </table>
+            <a class="btn btn-warning pull-right" id="btn_save">保存</a>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $("#btn_save").click(function(){
+        $.post(
+            "{{url_for('project_department_add')}}",
+            { name: $("#input_name").val() },
+            function(data){
+                 window.location = "{{url_for('project_department_list')}}";
+                }
+            );
+    })
+})
+</script>
+{% endblock %}

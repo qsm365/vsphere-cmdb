@@ -1,0 +1,49 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 1080px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">项目</font>
+            </span>
+            <a class="btn btn-warning pull-right" href="{{url_for('project_add')}}">新建项目</a>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>名称</td>
+                        <td>部门</td>
+                        <td>负责人</td>
+                        <td>状态</td>
+                        <td>创建时间</td>
+                        <td>结束时间</td>
+                        <td>提交审核时间</td>
+                        <td>审核通过时间</td>
+                        <td>网络变更时间</td>
+                        <td>交付时间</td>
+                        <td>上线时间</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in content_list %}
+                    <tr>
+                        <td><a href="{{url_for('project_detail')}}?id={{c.id}}">{{c.name}}</a></td>
+                        <td>{{c.department}}</td>
+                        <td>{{c.manager}}</td>
+                        <td><span class="badge">{{c.state|stateinfo}}</span></td>
+                        <td>{{c.startat}}</td>
+                        <td>{{c.endat|notnone}}</td>
+                        <td>{{c.precheckat|notnone}}</td>
+                        <td>{{c.approvalat|notnone}}</td>
+                        <td>{{c.networkat|notnone}}</td>
+                        <td>{{c.deliverat|notnone}}</td>
+                        <td>{{c.onlineat|notnone}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 480px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">编辑部门</font>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>部门名称:</td>
+                    <td><input id="input_name" type="text" class="form-control pull-right" value="{{departmentinfo[1]}}"/></td>
+                </tr>
+                <tr>
+                    <td>部门领导:</td>
+                    <td>
+                        <select id="select_leader1" class="form-control pull-right">
+                            <option value="0">请选择...</option>
+                            {% for c1 in contacts_list %}
+                            <option value="{{c1[0]}}" {% if departmentinfo[2]==c1[0] %}selected="selected"{% endif %}>{{c1[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>部门领导:</td>
+                    <td>
+                        <select id="select_leader2" class="form-control pull-right">
+                            <option value="0">请选择...</option>
+                            {% for c2 in contacts_list %}
+                            <option value="{{c2[0]}}" {% if departmentinfo[3]==c2[0] %}selected="selected"{% endif %}>{{c2[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </table>
+            <a class="btn btn-warning pull-right" id="btn_save">保存</a>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $("#btn_save").click(function(){
+        $.post(
+            "{{url_for('project_department_edit')}}?id={{departmentinfo[0]}}",
+            { name: $("#input_name").val(), leader1: $("#select_leader1").val(), leader2: $("#select_leader2").val() },
+            function(data){
+                 window.location = "{{url_for('project_department_list')}}";
+                }
+            );
+    })
+})
+</script>
+{% endblock %}

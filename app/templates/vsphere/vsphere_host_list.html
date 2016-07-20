@@ -1,0 +1,64 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 800px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span><font size="5">物理机列表</font></span>
+            <span class="badge">物理机数量:{{hostinfo|length}}</span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>物理机名称</td>
+                        <td>集群名称</td>
+                        <td>CPU</td>
+                        <td>内存</td>
+                        <td>虚机数量</td>
+                        <td>已分配CPU</td>
+                        <td>已分配内存</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for h in hostinfo|sort %}
+                    <tr class="onerow" id="{{h[0]}}">
+                        <td><a href="{{url_for('vsphere_host_detail')}}?hostid={{h[0]}}">{{h[1]}}</a></td>
+                        <td><a href="{{url_for('vsphere_host_list')}}?domainid={{h[2]}}">{{h[3]}}</a></td>
+                        <td>{{h[4]}}</td>
+                        <td>{{(h[5]/1024)|round}}GB</td>
+                        <td><span class="badge">{{h[6]}}</span></td>
+                        <td>{{h[7]}}</td>
+                        <td>{{(h[8]/1024)|round}}GB</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+<script>
+$(document).ready(function(){
+    $(".collapse").collapse('hide');
+    s1=0;
+    s2=0;
+    $("#panel-netwokrlist-head").click(function(){
+        if(s1==0){
+            $("#panel-netwokrlist-body").collapse('show');
+            s1=1}
+        else{
+            $("#panel-netwokrlist-body").collapse('hide');
+            s1=0}
+    });
+    $("#panel-networkunknownlist-head").click(function(){
+        if(s2==0){
+            $("#panel-networkunknownlist-body").collapse('show');
+            s2=1}
+        else{
+            $("#panel-networkunknownlist-body").collapse('hide');
+            s2=0}
+    });
+});
+</script>
+
+{% endblock %}

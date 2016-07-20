@@ -1,0 +1,47 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">部门</font>
+            </span>
+            <a class="btn btn-warning pull-right" href="{{url_for('project_department_add')}}">新建部门</a>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>部门名称</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in departmentlist %}
+                    <tr>
+                        <td>{{c[1]}}</td>
+                        <td>
+                            <a class="btn btn-info" href="{{url_for('project_department_edit')}}?id={{c[0]}}">编辑</a>
+                            <a class="btn btn-warning" href="#" onclick="del_department({{c[0]}})">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function del_department(id){
+        if(confirm("删除是不可恢复的，你确认要删除吗？")){
+            $.ajax({
+                url: '{{url_for("project_department_edit")}}?id='+id,
+                type: 'DELETE',
+                success: function(result) {
+                    window.location = "{{url_for('project_department_list')}}";
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

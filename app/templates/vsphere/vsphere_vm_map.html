@@ -1,0 +1,38 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="panel panel-primary" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <table class="table">
+        <thead>
+            <tr>
+                <td>DataCenter名称</td>
+                <td>区域名称</td>
+                <td>项目名称</td>
+                <td>虚拟机名称</td>
+            </tr>
+        </thead>
+        <tbody>
+        {% for d in dcmap |sort%}
+            <tr class="onerow">
+                <td>
+                    {{d[0]}}
+                </td>
+                <td>
+                    <a href="{{url_for('vsphere_project_list')}}?vmfid={{d[2]}}">{{d[1]}}</a>
+                </td>
+                <td>
+                    {% if d[3] %}
+                    <a href="{{url_for('vsphere_vm_list')}}?vmfid={{d[4]}}">{{d[3]}}</a>
+                    {% endif %}
+                </td>
+                <td>
+                    {% if d[5] %}
+                    <a href="{{url_for('vsphere_vm_detail')}}?vmid={{d[6]}}">{{d[5]}}</a>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+{% endblock %}

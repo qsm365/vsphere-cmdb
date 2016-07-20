@@ -1,0 +1,57 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 480px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">新建联系人</font>
+            </span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td>姓名:</td>
+                    <td><input id="input_name" type="text" class="form-control pull-right"/></td>
+                </tr>
+                <tr>
+                    <td>部门:</td>
+                    <td>
+                        <select id="select_department" class="form-control pull-right">
+                            <option value="0">请选择...</option>
+                            {% for d in department_list%}
+                            <option value="{{d[0]}}">{{d[1]}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <tr>
+                    <td>邮箱:</td>
+                    <td><input id="input_email" type="text" class="form-control pull-right"/></td>
+                </tr>
+                <tr>
+                    <td>电话:</td>
+                    <td><input id="input_phone" type="text" class="form-control pull-right"/></td>
+                </tr>
+                <tr>
+                    <td>QQ:</td>
+                    <td><input id="input_qq" type="text" class="form-control pull-right"/></td>
+                </tr>
+            </table>
+            <a class="btn btn-warning pull-right" id="btn_save">保存</a>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $("#btn_save").click(function(){
+        $.post(
+            "{{url_for('project_contacts_add')}}",
+            { name: $("#input_name").val(), departmentid: $('#select_department').val(), email: $("#input_email").val(), phone: $("#input_phone").val(), qq: $("#input_qq").val() },
+            function(data){
+                 window.location = "{{url_for('project_contacts_list')}}";
+                }
+            );
+    })
+})
+</script>
+{% endblock %}

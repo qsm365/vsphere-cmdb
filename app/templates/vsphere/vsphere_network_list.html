@@ -1,0 +1,111 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span><font size="5">{{networkinfo[2]}}</font></span>
+            <span class="badge pull-right">{{networksubnet}}.0</span>
+            <span class="badge pull-right">{{networkinfo[5]}}</span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+            <tbody>
+                <tr class="info">
+                    <td>Network Name</td>
+                    <td>{{networkinfo[2]}}</td>
+                </tr>
+                <tr class="">
+                    <td>Network Type</td>
+                    <td>{{networkinfo[5]}}</td>
+                </tr>
+                <tr class="info">
+                    <td>Subnet</td>
+                    <td>{{networksubnet}}.0</td>
+                </tr>
+            </tbody>
+            </table>
+            <div class="panel panel-primary">
+                <div class="panel-heading" id="panel-netwokrlist-head"><span class="badge pull-right">{{networkknown}}/255</span>IP 列表</div>
+                <div class="panel-body collapse" id="panel-netwokrlist-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>IP</td>
+                                <td>主机名</td>
+                                <td>项目名</td>
+                                <td>区域名</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in list %}
+                            <tr class="onerow" id="networklist-{{v[0]}}">
+                                <td>{{networksubnet}}.{{v[0]}}</td>
+                                <td><a href="{{url_for('vsphere_vm_detail')}}?vmid={{v[2]}}">{{v[1]}}</a></td>
+                                {% if v[5]%}
+                                <td><a href="{{url_for('vsphere_vm_list')}}?vmfid={{v[4]}}">{{v[3]}}</a></td>
+                                <td><a href="{{url_for('vsphere_project_list')}}?vmfid={{v[6]}}">{{v[5]}}</a></td>
+                                {% elif v[3] %}
+                                <td><a href="{{url_for('vsphere_vm_list')}}?vmfid={{v[4]}}">{{v[3]}}(未分组虚拟机)</a></td>
+                                <td><a href="{{url_for('vsphere_project_list')}}?vmfid={{v[4]}}">{{v[3]}}</a></td>
+                                {% else %}
+                                <td></td>
+                                <td></td>
+                                {% endif %}
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading" id="panel-networkunknownlist-head"><span class="badge pull-right">{{networkunknown|length}}</span>IP未识别主机列表</div>
+                <div class="panel-body collapse" id="panel-networkunknownlist-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>主机名</td>
+                                <td>项目名</td>
+                                <td>区域名</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for v in networkunknown %}
+                            <tr class="onerow" id="networkunknownlist-{{v[2]}}">
+                                <td ><a href="{{url_for('vsphere_vm_detail')}}?vmid={{v[2]}}">{{v[1]}}</a></td>
+                                <td ><a href="{{url_for('vsphere_vm_list')}}?vmfid={{v[4]}}">{{v[3]}}</a></td>
+                                <td ><a href="{{url_for('vsphere_project_list')}}?vmfid={{v[6]}}">{{v[5]}}</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+<script>
+$(document).ready(function(){
+    $(".collapse").collapse('hide');
+    s1=0;
+    s2=0;
+    $("#panel-netwokrlist-head").click(function(){
+        if(s1==0){
+            $("#panel-netwokrlist-body").collapse('show');
+            s1=1}
+        else{
+            $("#panel-netwokrlist-body").collapse('hide');
+            s1=0}
+    });
+    $("#panel-networkunknownlist-head").click(function(){
+        if(s2==0){
+            $("#panel-networkunknownlist-body").collapse('show');
+            s2=1}
+        else{
+            $("#panel-networkunknownlist-body").collapse('hide');
+            s2=0}
+    });
+});
+</script>
+
+{% endblock %}

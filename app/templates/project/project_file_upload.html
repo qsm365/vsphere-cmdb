@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>{{title}}</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+<script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</head>
+<body>
+<form action="#" method="post" enctype="multipart/form-data">
+
+    <span>为项目:"{{projectname}}"上传附件</span></br></br>
+    <input type="hidden" name="projectid" value="{{projectid}}"/>
+    <input type="hidden" name="projectname" value="{{projectname}}"/>
+    <input id="realfile" style="display:none" type="file" name="file" />
+    <input id="dammfile" class="input-large" type="text" style="height:30px;width:220px;"/>
+    <a class="btn btn-info" onclick="$('input[id=realfile]').click();">浏览</a>
+    </br>
+    </br>
+    文件分类:
+    <select name="filetype" class="form-control" style="width:270px;">
+        <option value="1">{{1|filetype}}</option>
+        <option value="2">{{2|filetype}}</option>
+    </select>
+    </br>
+    </br>
+    <input class="btn btn-info" type="submit" value="上传" />
+</form>
+<script>
+    $('input[id=realfile]').change(function(){
+        $('#dammfile').val($(this).val())
+    });
+</script>
+</body>
+</html>

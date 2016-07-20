@@ -1,0 +1,93 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">{{hostinfo[2]}}</font>
+            </span>
+            <a class="btn btn-warning pull-right" href="{{url_for('vsphere_performance_detail')}}?type=host&moid={{hostinfo[1]}}">查看物理机性能</a>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tbody>
+                <tr>
+                    <td>物理机名</td>
+                    <td>{{hostinfo[2]}}</td>
+                </tr>
+                <tr>
+                    <td>品牌</td>
+                    <td>{{hostinfo[7]}}</td>
+                </tr>
+                <tr>
+                    <td>型号</td>
+                    <td>{{hostinfo[8]}}</td>
+                </tr>
+                <tr>
+                    <td>所属集群</td>
+                    <td><a href="{{url_for('vsphere_host_list')}}?domainid={{hostinfo[3]}}">{{hostinfo[4]}}</a></td>
+                </tr>
+                <tr>
+                    <td>CPU</td>
+                    <td>{{hostinfo[5]}}</td>
+                </tr>
+                <tr>
+                    <td>内存</td>
+                    <td>{{(hostinfo[6]/1024)|round}} GB</td>
+                </tr>
+                <tr>
+                    <td>已分配CPU</td>
+                    <td>{{allocated_cpu}}</td>
+                </tr>
+                <tr>
+                    <td>已分配内存</td>
+                    <td>{{allocated_mem/1024}} GB</td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="panel panel-primary">
+                <div class="panel-heading" id="panel-vmlist-head"><span class="badge pull-right">{{hostvms|length}}</span>虚拟机信息</div>
+                <div class="panel-body collapse" id="panel-vmlist-body">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <td>虚拟机名称</td>
+                                <td>项目</td>
+                                <td>状态</td>
+                                <td>CPU</td>
+                                <td>内存</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {%for n in hostvms%}
+                            <tr>
+                                <td><a href="{{url_for('vsphere_vm_detail')}}?vmid={{n[1]}}">{{n[2]}}</a></td>
+                                <td><a href="{{url_for('vsphere_vm_list')}}?vmfid={{n[3]}}">{{n[4]}}</a></td>
+                                <td>{{n[5]}}</td>
+                                <td>{{n[6]}}</td>
+                                <td>{{n[7]/1024}} GB</td>
+                            </tr>
+                            {%endfor%}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+<script>
+$(document).ready(function(){
+    $(".collapse").collapse('hide');
+    s1=0;
+    $("#panel-vmlist-head").click(function(){
+        if(s1==0){
+            $("#panel-vmlist-body").collapse('show');
+            s1=1}
+        else{
+            $("#panel-vmlist-body").collapse('hide');
+            s1=0}
+    });
+});
+</script>
+{% endblock %}

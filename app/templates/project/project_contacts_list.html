@@ -1,0 +1,55 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 800px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">联系人</font>
+            </span>
+            <a class="btn btn-warning pull-right" href="{{url_for('project_contacts_add')}}">新建联系人</a>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>姓名</td>
+                        <td>部门</td>
+                        <td>邮箱</td>
+                        <td>电话</td>
+                        <td>QQ</td>
+                        <td>操作</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for c in contactslist %}
+                    <tr>
+                        <td>{{c[1]}}</td>
+                        <td>{{c[3]}}</td>
+                        <td>{{c[4]}}</td>
+                        <td>{{c[5]}}</td>
+                        <td>{{c[6]}}</td>
+                        <td>
+                            <a class="btn btn-info" href="{{url_for('project_contacts_edit')}}?id={{c[0]}}">编辑</a>
+                            <a class="btn btn-warning" href="#" onclick="del_contacts({{c[0]}})">删除</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    function del_contacts(id){
+        if(confirm("删除是不可恢复的，你确认要删除吗？")){
+            $.ajax({
+                url: '{{url_for("project_contacts_edit")}}?id='+id,
+                type: 'DELETE',
+                success: function(result) {
+                    window.location = "{{url_for('project_contacts_list')}}";
+                }
+            });
+        }
+    }
+</script>
+{% endblock %}

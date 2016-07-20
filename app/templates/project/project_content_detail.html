@@ -1,0 +1,305 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 720px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span>
+                <font size="5">项目</font>
+            </span>
+            <a class="btn btn-warning pull-right" href="#" id="btn_del">删除项目</a>
+            <a class="btn btn-info pull-right" href="#" id="btn_edit">编辑项目</a>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <tr>
+                    <td width="20%">名称</td>
+                    <td>{{content.name}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>部门</td>
+                    <td>{{content.department}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>负责人</td>
+                    <td>{{content.manager}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>类型</td>
+                    <td>{{content.type|projecttypeinfo}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>资源数量</td>
+                    <td>{{content.amount}} {%if content.type=='1'%}台虚拟机{%elif content.type=='2'%}GB{%endif%}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>状态</td>
+                    <td><span class="badge" id="state">{{content.state|stateinfo}}</span></td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>创建时间</td>
+                    <td>{{content.startat|notnone}}</td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>结束时间</td>
+                    <td>{{content.endat|notnone}}</td>
+                    <td></td>
+                </tr>
+            </table>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <font size="5">附件信息</font>
+                    <span class="badge">{{attachments|length}}</span>
+                    <a class="btn btn-warning pull-right" href="#" id="btn_upload">上传附件</a>
+                </div>
+                <div class="panel-body">
+                    <table class="table" id="att-table">
+                        <thead>
+                            <tr>
+                                <td width="50%">文件名</td>
+                                <td>分类</td>
+                                <td>上传时间</td>
+                                <td width="10%">操作</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for a in attachments %}
+                            <tr id="att-{{a[0]}}">
+                                <td><a href="{{url_for('project_file_download')}}?fileid={{a.id}}">{{a.filename}}</a></td>
+                                <td>{{a.type|filetype}}</td>
+                                <td>{{a.addtime}}</td>
+                                <td><a class="btn btn-info pull-right" id="btn_delete_attachment" onclick="del_attachment({{a.id}})">删除</a></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="panel panel-primary">
+                <div class="panel-heading">
+                    <font size="5">初审信息</font>
+                    <a class="btn btn-warning pull-right" href="#" id="btn_edit_precheck">编辑</a>
+                </div>
+                <div class="panel-body">
+                    <table class="table">
+                        <tr>
+                            <td width="20%">部署区域</td>
+                            <td><span id="precheck_zone_show">{{content.zone|notnone|zoneinfo}}</span></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td width="20%">初审结论</td>
+                            <td colspan="2">
+                                <textarea id="precheck_text_show" class="form-control" style="width:100%" rows="10" readonly="readonly">{{content.precheck|notnone|htmlparser}}</textarea>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td width="20%">初审提交时间</td>
+                            <td><span id="precheck_time">{{content.precheckat|notnone}}</span></td>
+                            <td>
+                                {% if not content.precheckat %}
+                                    <a href="#" class="btn btn-info pull-right" id="btn_commit_precheck">提交初审</a>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <table class="table">
+                <tr>
+                    <td width="20%">审核通过时间</td>
+                    <td>{{content.approvalat|notnone}}</td>
+                    <td>
+                        {% if not content.approvalat %}
+                            <a href="#" class="btn btn-info pull-right">审核通过</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>网络变更时间</td>
+                    <td>{{content.networkat|notnone}}</td>
+                    <td>
+                        {% if not content.networkat %}
+                            <a href="#" class="btn btn-info pull-right">网络确认</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>交付时间</td>
+                    <td>{{content.deliverat|notnone}}</td>
+                    <td>
+                        {% if not content.deliverat %}
+                            <a href="#" class="btn btn-info pull-right">交付确认</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>上线时间</td>
+                    <td>{{content.onlineat|notnone}}</td>
+                    <td>
+                        {% if not content.onlineat %}
+                            <a href="#" class="btn btn-info pull-right">上线确认</a>
+                        {% endif %}
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>
+<!-- Modal -->
+<div class="modal fade" id="upModal" tabindex="-1" role="dialog" aria-labelledby="upModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="upModalLabel">上传附件</h4>
+            </div>
+            <div class="modal-body" style="height:300px">
+                <iframe id="ifr_upload" width="100%" height="100%" style="border:0px;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="preModal" tabindex="-1" role="dialog" aria-labelledby="preModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="preModalLabel">编辑初审信息</h4>
+            </div>
+            <div class="modal-body" style="height:360px">
+                <table class="table">
+                    <tr>
+                        <td width="20%">部署区域</td>
+                        <td>
+                            <select id="precheck_zone" class="form-control">
+                                <option>请选择...</option>
+                                <option value="1" {% if content.zone=='1' %}selected="selected"{% endif %}>{{1|zoneinfo}}</option>
+                                <option value="2" {% if content.zone=='2' %}selected="selected"{% endif %}>{{2|zoneinfo}}</option>
+                                <option value="3" {% if content.zone=='3' %}selected="selected"{% endif %}>{{3|zoneinfo}}</option>
+                                <option value="4" {% if content.zone=='4' %}selected="selected"{% endif %}>{{4|zoneinfo}}</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td width="20%">初审结论</td>
+                        <td>
+                            <textarea id="precheck_text" class="form-control" style="width:100%" rows="10">{% if content.precheck %}{{content.precheck|htmlparser}}{% endif %}</textarea>
+                        </td>
+                    </tr>
+                </table>
+                <a href="#" id="precheck_edit_save" class="btn btn-info pull-right">保存</a>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="editModal" tabindex="-1" role="dialog" aria-labelledby="editModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="editModalLabel">编辑项目信息</h4>
+            </div>
+            <div class="modal-body" style="height:400px">
+                <iframe id="ifr_edit" width="100%" height="100%" style="border:0px;"></iframe>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+$(document).ready(function(){
+    $("#btn_del").click(function(){
+        var statu = confirm("确定删除吗?");
+        if(!statu){
+            return false;
+        }
+        $.ajax({
+            url: '#',
+            type: 'DELETE',
+            success: function(result) {
+                window.location = "{{url_for('project_list')}}";
+            }
+        });
+    });
+    $("#btn_edit").click(function(){
+        $("#ifr_edit").attr("src","{{url_for('project_edit')}}?id={{content.id}}");
+        $("#editModal").modal();
+    });
+    $("#btn_upload").click(function(){
+        $("#ifr_upload").attr("src","{{url_for('project_file_upload')}}?projectid={{content.id}}&projectname={{content.name}}");
+        $("#upModal").modal();
+    });
+    $("#btn_commit_precheck").click(function(){
+        $.post(
+            "#",
+            { operation: "commitprecheck" },
+            function(data){
+                $("#state").text("{{'check'|stateinfo}}")
+                $("#precheck_time").text(data)
+                $("#btn_commit_precheck").hide()
+                alert("send mail")
+            }
+        ).error(function(data){
+            if(data.responseText=="noprecheck"){
+                alert("初审内容未填写")
+            }else if(data.responseText=="noattach"){
+                alert("没有上传附件")
+            }else{
+                alert("未知错误")
+            }
+        });
+        return false;
+    });
+    $("#btn_edit_precheck").click(function(){
+        $("#precheck_edit_save").click(function(){
+            $.post(
+                "#",
+                { operation: "editprecheck", zone: $('#precheck_zone').val(), text: $("#precheck_text").val() },
+                function(data){
+                    $("#precheck_zone_show").text($("#precheck_zone").find("option:selected").text())
+                    $("#precheck_text_show").val($("#precheck_text").val())
+                    $("#preModal").modal('hide');
+                }
+            );
+            return false;
+        });
+        $("#preModal").modal();
+        return false;
+    });
+});
+function del_attachment(id){
+    $.ajax({
+            url: '{{url_for('project_file_upload')}}?fileid='+id,
+            type: 'DELETE',
+            success: function(result) {
+                $("#att-"+id).remove();
+            }
+        });
+    return false
+}
+function add_attachment(id,filename,filetype,addtime){
+    var table1 = $('#att-table');
+    var row = $("<tr id='att-"+id+"'></tr>");
+    var td1 = $("<td></td>");
+    td1.append($("<a href='{{url_for('project_file_download')}}?fileid="+id+"'>"+filename+"</a>"));
+    row.append(td1);
+    var td2 = $("<td></td>");
+    td2.append(filetype);
+    row.append(td2);
+    var td3 = $("<td></td>");
+    td3.append(addtime);
+    row.append(td3);
+    var td4 = $("<td></td>");
+    td4.append($("<a class='btn btn-info pull-right' id='btn_delete_attachment' onclick='del_attachment("+id+")'>删除</a>"));
+    row.append(td4);
+    table1.append(row);
+    $("#upModal").modal('hide')
+}
+</script>
+{% endblock %}

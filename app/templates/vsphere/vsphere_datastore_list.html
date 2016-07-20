@@ -1,0 +1,40 @@
+{% extends "layout.html" %}
+{% block body %}
+<div class="well" style="margin-left: auto;margin-right: auto;width: 800px;">
+    <div class="panel panel-primary">
+        <div class="panel-heading" style="height:50px;">
+            <span><font size="5">存储列表</font></span>
+            <span class="badge">存储数量:{{datastoreinfo|length}}</span>
+        </div>
+        <div class="panel-body">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <td>存储名称</td>
+                        <td>容量</td>
+                        <td>可用空间</td>
+                        <td>制备空间</td>
+                        <td>使用率</td>
+                        <td>制备率</td>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for d in datastoreinfo|sort %}
+                    <tr class="onerow" id="{{d[1]}}">
+                        <td><a href="#">{{d[2]}}</a></td>
+                        <td>{{d[5]|adjustnum}}</td>
+                        <td>{{d[6]|adjustnum}}</td>
+                        <td>{{(d[5]-d[6]+d[7])|adjustnum}}</td>
+                        <td>{{(1-d[6]/d[5])|percentage}}</td>
+                        <td>{{((d[5]-d[6]+d[7])/d[5])|percentage}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<div style="text-align:center;">数据更新时间:{{version[1]}};</br>数据version id:{{version[0]}};</div>
+
+
+{% endblock %}
