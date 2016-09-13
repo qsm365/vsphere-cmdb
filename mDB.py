@@ -37,8 +37,9 @@ class mDB:
         self.sql='insert into vsphere_folder(version,folderid,name,parentid,parent,type) values ("'+ver+'","'+folderid+'","'+name+'","'+parentid+'","'+parent+'","'+ftype+'")'
         self.DMLSql()
     
-    def saveVM(self,ver,vmid,name,parentid,parent,state,cpu,memory,os):
-        self.sql='insert into vsphere_vm(version,vmid,name,parentid,parent,state,cpu,memory,os) values ("'+ver+'","'+vmid+'","'+name+'","'+parentid+'","'+parent+'","'+state+'","'+cpu+'","'+memory+'","'+os+'")'
+    def saveVM(self, ver, vmid, name, parentid, parent, state, cpu, memory, os, committed, uncommitted, datastoreid, datastore):
+        self.sql='insert into vsphere_vm(version,vmid,name,parentid,parent,state,cpu,memory,os,committed, uncommitted, datastoreid, datastore)' \
+                 ' values ("'+ver+'","'+vmid+'","'+name+'","'+parentid+'","'+parent+'","'+state+'","'+cpu+'","'+memory+'","'+os+'","'+str(committed)+'","'+str(uncommitted)+'","'+datastoreid+'","'+datastore+'")'
         self.DMLSql()
     
     def saveVMNic(self,ver,nicid,vmid,networktype,network,ipaddress,mac):
@@ -77,5 +78,6 @@ class mDB:
             conn.close()
             return insert_id
         except MySQLdb.Error,e:
+            print self.sql
             print e
             logging.error("Mysql Error %d: %s" % (e.args[0], e.args[1]))

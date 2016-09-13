@@ -13,27 +13,45 @@
                 <tbody>
                 <tr>
                     <td>虚拟机名</td>
-                    <td>{{vminfo[2]}}</td>
+                    <td>{{vminfo['name']}}</td>
                 </tr>
                 <tr>
                     <td>状态</td>
-                    <td>{{vminfo[5]}}</td>
+                    <td>{{vminfo['state']}}</td>
                 </tr>
                 <tr>
                     <td>所属项目</td>
-                    <td>{{zoneinfo[2]}}{%if projectinfo%}-{{projectinfo[2]}}{%endif%}</td>
+                    <td>{{zoneinfo['name']}}{%if projectinfo%}-{{projectinfo['name']}}{%endif%}</td>
                 </tr>
                 <tr>
                     <td>OS</td>
-                    <td>{{vminfo[8]}}</td>
+                    <td>{{vminfo['os']}}</td>
                 </tr>
                 <tr>
                     <td>CPU</td>
-                    <td>{{vminfo[6]}}</td>
+                    <td>{{vminfo['cpu']}}</td>
                 </tr>
                 <tr>
                     <td>内存</td>
-                    <td>{{vminfo[7]/1024}} GB</td>
+                    <td>{{vminfo['memory']/1024}} G</td>
+                </tr>
+                <tr>
+                    <td>存储已使用</td>
+                    <td>{{vminfo['committed']|adjustnum}}</td>
+                </tr>
+                <tr>
+                    <td>存储已置备</td>
+                    <td>{{(vminfo['committed']+vminfo['uncommitted'])|adjustnum}}</td>
+                </tr>
+                <tr>
+                    <td>使用/置备</td>
+                    <td>
+                        <div class="progress">
+                            <div class="progress-bar" role="progressbar"
+                                 aria-valuemin="0" aria-valuemax="100" style="width: {{(vminfo['committed']/(vminfo['uncommitted']+vminfo['committed']))|percentage}}%;">
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>

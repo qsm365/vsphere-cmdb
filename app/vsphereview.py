@@ -5,7 +5,9 @@ from . import app
 import vspherebusiness
 import vsphereagent
 
+
 vsphereprofile = Blueprint('vsphereprofile', __name__)
+
 
 @app.route('/test', methods = ['GET', 'POST'])
 def test():
@@ -20,6 +22,7 @@ def test():
     else:
         return 'bad request',401
 
+
 @app.route('/vsphere/datastore/list')
 def vsphere_datastore_list():
     if not session.get('username'):
@@ -29,6 +32,7 @@ def vsphere_datastore_list():
     datastoreinfo = vspherebusiness.get_all_datastoreinfo(ver)
     return render_template('vsphere/vsphere_datastore_list.html', title='VSpher Datastore List', version=version,
                            datastoreinfo=datastoreinfo)
+
 
 @app.route('/vsphere/performance/json',methods=['GET'])
 def vsphere_performance_json():
@@ -42,6 +46,7 @@ def vsphere_performance_json():
         return jsonify(perfinfo)
     else:
         return 'bad request', 401
+
 
 @app.route('/vsphere/performance/detail',methods=['GET'])
 def vsphere_performance_detail():
@@ -84,6 +89,7 @@ def vsphere_performance_detail():
     else:
         return redirect(url_for('vsphere/vsphere_vm_home'))
 
+
 @app.route('/vsphere/host/detail',methods=['GET'])
 def vsphere_host_detail():
     if not session.get('username'):
@@ -105,6 +111,7 @@ def vsphere_host_detail():
     return render_template('vsphere/vsphere_host_detail.html', title='VSpher Host', version=version, hostinfo=hostinfo,
                            hostvms=hostvms, allocated_cpu=allocated_cpu, allocated_mem=allocated_mem)
 
+
 @app.route('/vsphere/host/list',methods=['GET'])
 def vsphere_host_list():
     if not session.get('username'):
@@ -116,6 +123,7 @@ def vsphere_host_list():
     return render_template('vsphere/vsphere_host_list.html', title='VSpher Host List', version=version,
                            hostinfo=hostinfo)
 
+
 @app.route('/vsphere/vm/map',methods=['GET'])
 def vsphere_vm_map():
     if not session.get('username'):
@@ -126,6 +134,7 @@ def vsphere_vm_map():
     dcmap = vspherebusiness.get_vm_map(ver, dcid)
     return render_template('vsphere/vsphere_vm_map.html', title='VSpher VM Map', version=version, dcmap=dcmap)
 
+
 @app.route('/vsphere/project/map',methods=['GET'])
 def vsphere_project_map():
     if not session.get('username'):
@@ -135,6 +144,7 @@ def vsphere_project_map():
     ver = version[0]
     dcmap = vspherebusiness.get_project_map(ver, dcid)
     return render_template('vsphere/vsphere_project_map.html', title='VSpher Project Map', version=version, dcmap=dcmap)
+
 
 @app.route('/vsphere/vm/detail',methods = ['GET'])
 def vsphere_vm_detail():
@@ -154,6 +164,7 @@ def vsphere_vm_detail():
     return render_template('vsphere/vsphere_vm_detail.html', title='VSpher VM',version=version,zoneinfo=zoneinfo,projectinfo=projectinfo,
                            vminfo=vminfo,vmnicinfo=vmnicinfo,hostinfo=hostinfo)
 
+
 @app.route('/vsphere/network',methods = ['GET'])
 def vsphere_network_home():
     if not session.get('username'):
@@ -162,6 +173,7 @@ def vsphere_network_home():
     ver = version[0]
     networks = vspherebusiness.get_all_networkinfos(ver)
     return render_template('vsphere/vsphere_network_home.html', title='VSpher Network', version=version, networks=networks)
+
 
 @app.route('/vsphere/network/list',methods = ['GET'])
 def vsphere_network_list():
@@ -182,6 +194,7 @@ def vsphere_network_list():
                            list=networklist, networkunknown=networkunknown, networksubnet=networksubnet,
                            networkknown=networkknown)
 
+
 @app.route('/vsphere/vm/list',methods = ['GET'])
 def vsphere_vm_list():
     if not session.get('username'):
@@ -195,6 +208,7 @@ def vsphere_vm_list():
     vms = vspherebusiness.get_child_vm(ver, vmfid).fetchall()
     c_vm = len(vms)
     return render_template('vsphere/vsphere_vm_list.html', title='VSpher VM List',version=version,folder=folder,vms=vms,c_vm=c_vm)
+
 
 @app.route('/vsphere/vm/project/list',methods = ['GET'])
 def vsphere_project_list():
@@ -215,6 +229,7 @@ def vsphere_project_list():
     return render_template('vsphere/vsphere_project_list.html', title='VSpher Project List',version=version,folder=folder,
                            folders=folders,c_vm=c_vm,c_vms=c_vms,vmfid=vmfid)
 
+
 @app.route('/vsphere/vm', methods = ['GET'])
 def vsphere_vm_home():
     if not session.get('username'):
@@ -226,6 +241,7 @@ def vsphere_vm_home():
     dcinfo = vspherebusiness.get_dcinfo_by_dcid(ver, dcid)
     return render_template('vsphere/vsphere_vm_home.html', title='VSpher VM Home', version=version, dcs=dcs,dcinfo=dcinfo )
 
+
 @app.template_filter('adjustnum_k')
 def adjustnum_filter(s):
     if s<1000:
@@ -236,6 +252,7 @@ def adjustnum_filter(s):
         return str(round(s/1024.0/1024.0,2))+' G'
     else:
         return str(round(s / 1024.0 / 1024.0/ 1024.0, 2)) + ' T'
+
 
 @app.template_filter('adjustnum')
 def adjustnum_filter(s):
@@ -249,6 +266,7 @@ def adjustnum_filter(s):
     else:
         return str(round(s / 1024.0 / 1024.0/ 1024.0, 2)) + ' T'
 
+
 @app.template_filter('percentage')
 def percentage_filter(s):
-    return str(round(s*100,2)) + ' %'
+    return str(round(s*100,2))

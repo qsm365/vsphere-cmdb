@@ -90,7 +90,7 @@
         type: "line",
         dataPoints: [
         {% for i in range(slen) %}
-        { x: new Date("{{sampletime[i]}}"), y: {{cpuval[i]}} },
+        { x: new Date("{{sampletime[i]}}"), y: ({{cpuval[i]}}+0) },
         {% endfor %}
         ]
       }
@@ -106,7 +106,7 @@
         type: "line",
         dataPoints: [
         {% for i in range(slen) %}
-        { x: new Date("{{sampletime[i]}}"), y: {{disk1val[i]}} },
+        { x: new Date("{{sampletime[i]}}"), y: ({{disk1val[i]}}+0) },
         {% endfor %}
         ]
       }
@@ -122,7 +122,7 @@
         type: "line",
         dataPoints: [
         {% for i in range(slen) %}
-        { x: new Date("{{sampletime[i]}}"), y: {{disk2val[i]}} },
+        { x: new Date("{{sampletime[i]}}"), y: ({{disk2val[i]}}+0) },
         {% endfor %}
         ]
       }
@@ -138,7 +138,7 @@
         type: "line",
         dataPoints: [
         {% for i in range(slen) %}
-        { x: new Date("{{sampletime[i]}}"), y: {{memval[i]}} },
+        { x: new Date("{{sampletime[i]}}"), y: ({{memval[i]}}+0) },
         {% endfor %}
         ]
       }
@@ -154,7 +154,7 @@
         type: "line",
         dataPoints: [
         {% for i in range(slen) %}
-        { x: new Date("{{sampletime[i]}}"), y: {{netval[i]}} },
+        { x: new Date("{{sampletime[i]}}"), y: ({{netval[i]}}+0) },
         {% endfor %}
         ]
       }

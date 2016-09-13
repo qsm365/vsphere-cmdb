@@ -4,6 +4,7 @@ from pyVmomi import vmodl
 from pyVmomi import vim
 import mDB
 import time
+import traceback
 
 progDB=mDB.mDB()
 
@@ -16,7 +17,11 @@ def getVM(ver,vm):
     cpu = str(vm.config.hardware.numCPU)
     memory = str(vm.config.hardware.memoryMB)
     os = vm.config.guestFullName
-    progDB.saveVM(ver, vmid, name, parentid, parent, state, cpu, memory, os)
+    committed = vm.storage.perDatastoreUsage[0].committed
+    uncommitted = vm.storage.perDatastoreUsage[0].uncommitted
+    datastoreid = vm.storage.perDatastoreUsage[0].datastore._moId
+    datastore = vm.storage.perDatastoreUsage[0].datastore.name
+    progDB.saveVM(ver, vmid, name, parentid, parent, state, cpu, memory, os, committed, uncommitted, datastoreid, datastore)
     networks = vm.network
     guest = vm.guest
     if guest is not None:
@@ -61,10 +66,16 @@ def getVmFolder(ver,parent):
             name = child.name
             progDB.saveFolder(ver,folderid, name, parentid, parentname, ftype)
             #time.sleep(1)
-            getVmFolder(ver,child)
+            try:
+                getVmFolder(ver,child)
+            except:
+                traceback.print_exc()
         elif str(type(child))=='<class \'pyVmomi.VmomiSupport.vim.VirtualMachine\'>':
             #time.sleep(1)
-            getVM(ver,child)
+            try:
+                getVM(ver,child)
+            except:
+                traceback.print_exc()
 
 def getHostFolder(ver,parent):
     parentid = parent._moId
@@ -121,12 +132,13 @@ def getDatastore(ver,parent):
 
 if __name__ == "__main__":
     ssl._create_default_https_context = ssl._create_unverified_context
-    vcenterip='172.28.213.90'
+    vcenterip='198.16.2.221'
     vcenterport=443
-    vcenteruser='monitor@vsphere.local'
-    vcenterpass='monitor'
+    vcenteruser='admin'
+    vcenterpass='ysyw2015$8'
     try:
         si = connect.Connect(vcenterip, vcenterport, vcenteruser, vcenterpass)
+        print "vCenter conneted!"
         content = si.RetrieveContent()
         ver=progDB.saveVersion()
         dcs = getDataCenter(ver,content)
@@ -142,5 +154,6 @@ if __name__ == "__main__":
             getHostFolder(ver, dc.hostFolder)
             getDatastore(ver,dc)
 
-    except vmodl.MethodFault as error:
-        print("Caught vmodl fault : " + error.msg)
+    except:
+        traceback.print_exc()
+        #print("Caught vmodl fault : " + error.msg)

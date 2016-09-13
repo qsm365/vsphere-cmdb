@@ -53,11 +53,18 @@ def captcha():
 
 @app.template_filter('average')
 def average_filter(s):
-    return round(sum(s) / float(len(s)),2)
+    if len(s) > 0:
+        return round(sum(s) / float(len(s)), 2)
+    else:
+        return 0
+
 
 @app.template_filter('max')
 def max_filter(s):
-    return max(s)
+    if s:
+        return max(s)
+    else:
+        return 0
 
 @app.template_filter('notnone')
 def notnone_filter(s):

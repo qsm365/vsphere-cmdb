@@ -16,17 +16,24 @@
                         <td>状态</td>
                         <td>CPU</td>
                         <td>内存</td>
-                        <td>OS</td>
+                        <td>存储</td>
                     </tr>
                 </thead>
                 <tbody>
                     {% for vm in vms %}
                     <tr class="onerow" id="{{vm[1]}}">
-                        <td ><a href="{{url_for('vsphere_vm_detail')}}?vmid={{vm[1]}}">{{vm[2]}}</a></td>
-                        <td ><span class="badge">{{vm[5]}}</span></td>
-                        <td>{{vm[6]}}</td>
-                        <td>{{vm[7]/1024}}G</td>
-                        <td>{{vm[8]}}</td>
+                        <td style="vertical-align:middle;"><a href="{{url_for('vsphere_vm_detail')}}?vmid={{vm[1]}}">{{vm['name']}}</a></td>
+                        <td style="vertical-align:middle;"><span class="badge">{{vm['state']}}</span></td>
+                        <td style="vertical-align:middle;">{{vm['cpu']}}</td>
+                        <td style="vertical-align:middle;">{{vm['memory']/1024}} G</td>
+                        <td>
+                            {{vm['committed']|adjustnum}} / {{(vm['uncommitted']+vm['committed'])|adjustnum}}
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar"
+                                     aria-valuemin="0" aria-valuemax="100" style="width: {{(vm['committed']/(vm['uncommitted']+vm['committed']))|percentage}}%;">
+                                </div>
+                            </div>
+                        </td>
                     </tr>
                     {% endfor %}
                 </tbody>
